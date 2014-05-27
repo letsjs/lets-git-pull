@@ -1,0 +1,43 @@
+{
+  "name": "lets-git-pull",
+  "version": "0.0.0",
+  "description": "Deployment management for Lets using git pull",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "grunt test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:letsjs/lets-git-pull.git"
+  },
+  "keywords": [
+    "lets",
+    "deploy",
+    "git",
+    "pull",
+    "ssh"
+  ],
+  "author": "Andreas Hultgren",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/letsjs/lets-git-pull/issues"
+  },
+  "homepage": "https://github.com/letsjs/lets-git-pull",
+  "peerDependencies": {
+    "lets": "~0.0.5"
+  },
+  "devDependencies": {
+    "grunt": "^0.4.2",
+    "grunt-cli": "^0.1.13",
+    "grunt-contrib-jshint": "^0.8.0",
+    "grunt-contrib-watch": "^0.5.3",
+    "grunt-mocha-test": "^0.9.3",
+    "mocha": "^1.17.1",
+    "sinon": "^1.8.2",
+    "sinon-chai": "^2.5.0",
+    "chai": "^1.9.0"
+  },
+  "dependencies": {
+    "async": "^0.2.10"
+  }
+}
