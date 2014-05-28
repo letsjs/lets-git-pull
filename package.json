@@ -24,7 +24,8 @@
   },
   "homepage": "https://github.com/letsjs/lets-git-pull",
   "peerDependencies": {
-    "lets": "~0.0.5"
+    "lets": "^0.0.5",
+    "lets-ssh": "^0.0.0"
   },
   "devDependencies": {
     "grunt": "^0.4.2",
