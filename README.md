@@ -19,6 +19,8 @@ npm install lets-git-pull
 Create the following **Letsfile.js**:
 
 ```js
+var gitpull = require('lets-git-pull');
+
 module.exports = function (lets) {
   // Create a stage
   var stagename = lets.Stage({
@@ -38,6 +40,9 @@ module.exports = function (lets) {
       c.exec('ln -nfs ' + options.current + ' /var/www/site.com', done);
     });
   });
+
+  // Deploy using git pull
+  stagename.plugin(gitpull());
 
   // Add the stage to lets
   lets.addStage('stagename', stagename);
