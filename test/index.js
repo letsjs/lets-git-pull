@@ -40,7 +40,7 @@ testThatHandlersHaveBeenCalled(
   }]);
 
 testThatHandlersHaveBeenCalled(
-  ['connect', 'deploy:check', 'disconnect'], 'testing', [{
+  ['deploy:check'], 'testing', [{
     handler: gitPull.check
   }]);
 
@@ -48,7 +48,7 @@ testThatHandlersHaveBeenCalled(
   ['deploy'], 'testing', [
     {
       handler: gitPull.first,
-      count: 2
+      count: 3
     },
     {
       handler: gitPull.update
@@ -62,7 +62,7 @@ testThatHandlersHaveBeenCalled(
   ]);
 
 testThatHandlersHaveBeenCalled(
-  ['connect', 'deploy:cleanup', 'disconnect'], 'testing', [{
+  ['deploy:cleanup'], 'testing', [{
     handler: gitPull.cleanup
   }]);
 
