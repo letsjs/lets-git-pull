@@ -9,9 +9,7 @@ module.exports = function (lets) {
     repository: pkg.repository.url
   });
 
-  var testing = lets.Stage({
-      tryKeyboard: true
-    })
+  var testing = lets.Stage()
     .config(require('./config'))
     .plugin(letsGitPull());
 
