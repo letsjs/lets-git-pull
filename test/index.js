@@ -13,7 +13,9 @@ var
     lets = require('lets'),
     Letsfile = require('./Letsfile'),
     gitPull = require('../.'),
-    config;
+    State = require('./State'),
+    config = require('./config'),
+    state;
 
 chai.should();
 chai.use(sinonChai);
@@ -34,15 +36,43 @@ setupSpies();
 /* Tests
 ============================================================================= */
 
+state = new State(config);
+
+before(function (done) {
+  async.series([
+    state.start.bind(state),
+    state.update.bind(state)
+  ], done);
+});
+
+/*describe('Before doing anything', function () {
+  state.shouldBeEmpty();
+});*/
+
 testThatHandlersHaveBeenCalled(
   ['deploy:setup'], 'testing', [{
     handler: gitPull.setup
   }]);
 
+describe('After setup', function () {
+  before(state.update.bind(state));
+
+  state.shouldEqual({
+    'releases': true,
+    'shared': true
+  });
+});
+
 testThatHandlersHaveBeenCalled(
   ['deploy:check'], 'testing', [{
     handler: gitPull.check
   }]);
+
+describe('After check, state should not have changed', function () {
+  before(state.update.bind(state));
+
+  //state.shouldEqual(state.last);
+});
 
 testThatHandlersHaveBeenCalled(
   ['deploy'], 'testing', [
@@ -61,12 +91,30 @@ testThatHandlersHaveBeenCalled(
     }
   ]);
 
+describe('After deploy', function () {
+  before(state.update.bind(state));
+
+  state.shouldEqual({
+    'releases.length': function () {
+      return state.last.releases.length + 1;
+    },
+    'current': true //## Test where current points to?
+  });
+});
+
 testThatHandlersHaveBeenCalled(
   ['deploy:cleanup'], 'testing', [{
     handler: gitPull.cleanup
   }]);
 
-lets.logger.on('error', function () {});
+describe('After cleanup', function () {
+  before(state.update.bind(state));
+
+  state.shouldEqual({
+    'releases.length': 5
+  });
+});
+
 
 /* Helpers
 ============================================================================= */
