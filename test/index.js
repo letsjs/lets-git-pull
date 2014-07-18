@@ -1,6 +1,6 @@
 'use strict';
 
-/*global it:true, describe:true, before:true*/
+/*global it:true, describe:true, before:true, after:true*/
 /*jshint unused:false*/
 /*jshint expr:true*/
 
@@ -71,7 +71,7 @@ testThatHandlersHaveBeenCalled(
 describe('After check, state should not have changed', function () {
   before(state.update.bind(state));
 
-  //state.shouldEqual(state.last);
+  state.shouldEqual(state.last);
 });
 
 testThatHandlersHaveBeenCalled(
@@ -98,7 +98,9 @@ describe('After deploy', function () {
     'releases.length': function () {
       return state.last.releases.length + 1;
     },
-    'current': true //## Test where current points to?
+    'current.symlink': function () {
+      return config.remotePath + '/releases/' + Object.keys(state.state.releases).sort().pop();
+    }
   });
 });
 
@@ -111,9 +113,13 @@ describe('After cleanup', function () {
   before(state.update.bind(state));
 
   state.shouldEqual({
-    'releases.length': 5
+    'releases.length': function () {
+      return state.state.releases.length < 5 ? state.state.releases.length : 5;
+    }
   });
 });
+
+after(state.end.bind(state));
 
 
 /* Helpers
