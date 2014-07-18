@@ -89,10 +89,6 @@ The branch to checkout. Default is master.
 **options.keepRevisions = 5**  
 How many revisions to keep on cleanup. Default is 5.
 
-**options.copy = false**  
-**Not implemented yet.** Set to true to clone the project locally and scp up the
-code to the remote.
-
 
 ### Options made available by lets-git-pull:
 
