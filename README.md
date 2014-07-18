@@ -106,14 +106,22 @@ Use for e.g. symlinking the project to the webserver's public-html file.
 Available after `deploy:publish`.
 
 
-## TODO
-
-* options.copy to scp when git clone is not possible on the remote
-
-
 ## Contribution
 
 See guidelines for [lets][lets].
+
+
+### Tests
+
+Run tests using `npm test`, `grunt test` or `make test`. You need to set up your
+own SSH-server to test against. On OS X a really simple way is to simply enable
+`Sharing->Remote Login` (preferably on a for this purpose designated account).
+However on OS X (and any other server which doesn't use GNU CLI tools) you also
+need to install GNU find (using e.g. `brew install findutils --default-names`),
+since the tests use a flag (-printf) which the BSD version doesn't support.
+
+When you have an SSH-server to test against, copy `test/config-sample.js` to
+`config.js` and enter its details.
 
 
 [lets]: https://github.com/letsjs/lets
