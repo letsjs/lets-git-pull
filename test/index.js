@@ -32,6 +32,11 @@ function setupSpies () {
 
 setupSpies();
 
+var onError = sinon.spy();
+var onWarn = sinon.spy();
+lets.logger.on('err', onError);
+lets.logger.on('warn', onWarn);
+
 
 /* Tests
 ============================================================================= */
@@ -121,6 +126,16 @@ describe('After cleanup', function () {
 
 after(state.end.bind(state));
 
+
+describe('lets.logger', function () {
+  it('should not have emitted "err"', function () {
+    onError.should.not.have.been.called;
+  });
+
+  it('should not have emitted "warn"', function () {
+    onWarn.should.not.have.been.called;
+  });
+});
 
 /* Helpers
 ============================================================================= */
