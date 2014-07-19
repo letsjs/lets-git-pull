@@ -55,8 +55,7 @@ runTasksAndCompareState({
     handler: gitPull.setup
   }],
   stateAfter: {
-    'releases': true,
-    'shared': true
+    shouldExist: ['releases', 'shared']
   }
 });
 
@@ -67,8 +66,10 @@ runTasksAndCompareState({
   shouldCall: [{
     handler: gitPull.check
   }],
-  stateAfter: function () {
-    return state.last;
+  stateAfter: {
+    shouldMatch: function () {
+      return state.last;
+    }
   }
 });
 
@@ -92,11 +93,12 @@ runTasksAndCompareState({
     }
   ],
   stateAfter: {
-    'releases.length': function () {
-      return state.last.releases.length + 1;
-    },
-    'current.symlink': function () {
-      return config.remotePath + '/releases/' + Object.keys(state.state.releases).sort().pop();
+    shouldEqual: function () {
+      return {
+        'releases.length': state.last.releases.length + 1,
+        'current.symlink': config.remotePath + '/releases/' +
+          Object.keys(state.state.releases).sort().pop()
+      };
     }
   }
 });
@@ -109,8 +111,10 @@ runTasksAndCompareState({
     handler: gitPull.cleanup
   }],
   stateAfter: {
-    'releases.length': function () {
-      return state.state.releases.length < 5 ? state.state.releases.length : 5;
+    shouldEqual: function () {
+      return {
+        'releases.length': state.state.releases.length < 5 ? state.state.releases.length : 5
+      };
     }
   }
 });
@@ -154,10 +158,16 @@ function runTasksAndCompareState (options) {
   });
 
   if(options.stateAfter) {
-    describe('After ' + options.describe, function () {
-      before(state.update.bind(state));
+    Object.keys(options.stateAfter).forEach(function (comparator) {
+      describe('After ' + options.describe, function () {
+        var value = options.stateAfter[comparator];
 
-      state.shouldEqual(options.stateAfter);
+        before(state.update.bind(state));
+
+        it('server state ' + comparator + ' ' + value, function () {
+          state[comparator](value);
+        });
+      });
     });
   }
 }

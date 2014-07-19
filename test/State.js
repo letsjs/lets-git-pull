@@ -1,6 +1,5 @@
 'use strict';
 
-/*global it:true, describe:true*/
 /*jshint expr:true*/
 
 var Ssh = require('ssh2');
@@ -32,7 +31,7 @@ State.prototype.end = function(callback) {
 
 State.prototype.update = function(callback) {
   var self = this;
-  var find = 'find {0} -maxdepth 2 -printf "%P{1}%l\\n"';
+  var find = 'mkdir -p {0} && find {0} -maxdepth 2 -printf "%P{1}%l\\n"';
 
   self._exec(utils.format(find, this.options.remotePath, symlinkSeparator),
     function (err, state) {
@@ -49,46 +48,41 @@ State.prototype.update = function(callback) {
 };
 
 /**
- * Assert that the specified paths exists
+ * Assert that the specified paths equals the expected value
  */
-State.prototype.shouldEqual = function(comparers) {
+State.prototype.shouldEqual = function(paths) {
   var self = this;
 
-  if(typeof comparers === 'function') {
-    describe('all properties', function () {
-      it('should equal all properties', function () {
-        expect(self.state).to.eql(comparers());
-      });
-    });
+  Object.keys(paths).forEach(function (key) {
+    var value = paths[key];
 
-    return;
-  }
+    expect(findByPath(self.state, key)).to.equal(value());
+  });
+};
 
-  Object.keys(comparers).forEach(function (key) {
-    var value = comparers[key];
+State.prototype.shouldMatch = function(value) {
+  expect(this.state).to.eql((typeof value === 'function' ? value() : value));
+};
 
-    describe('"' + key + '"', function () {
-      if(value === true) {
-        it('should exist', function () {
-          expect(findByPath(self.state, key)).to.exist;
-        });
-      }
-      else if(value === false) {
-        it('should not exist', function () {
-          expect(findByPath(self.state, key)).to.be.undefined;
-        });
-      }
-      else if(typeof value === 'function') {
-        it('should equal ' + value, function () {
-          expect(findByPath(self.state, key)).to.equal(value());
-        });
-      }
-      else {
-        it('should equal ' + value, function () {
-          expect(findByPath(self.state, key)).to.equal(value);
-        });
-      }
-    });
+/**
+ * Assert that the specified paths exist
+ */
+State.prototype.shouldExist = function(paths) {
+  var self = this;
+
+  paths.forEach(function (path) {
+    expect(findByPath(self.state, path)).to.exist;
+  });
+};
+
+/**
+ * Assert that the specified paths doesn't exist
+ */
+State.prototype.shouldNotExist = function(paths) {
+  var self = this;
+
+  paths.forEach(function (path) {
+    expect(findByPath(self.state, path)).to.not.exist;
   });
 };
 
