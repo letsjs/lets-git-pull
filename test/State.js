@@ -54,6 +54,16 @@ State.prototype.update = function(callback) {
 State.prototype.shouldEqual = function(comparers) {
   var self = this;
 
+  if(typeof comparers === 'function') {
+    describe('all properties', function () {
+      it('should equal all properties', function () {
+        expect(self.state).to.eql(comparers());
+      });
+    });
+
+    return;
+  }
+
   Object.keys(comparers).forEach(function (key) {
     var value = comparers[key];
 
