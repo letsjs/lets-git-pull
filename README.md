@@ -89,6 +89,9 @@ The branch to checkout. Default is master.
 **options.keepRevisions = 5**  
 How many revisions to keep on cleanup. Default is 5.
 
+**options.removeOldRevisionOnRollback = true**  
+Whether or not to remove the old revision on rollback.
+
 
 ### Options made available by lets-git-pull:
 
@@ -100,6 +103,10 @@ after `deploy:update`.
 The absolute path to the symlink ([remotePath]/current) to the current revision.
 Use for e.g. symlinking the project to the webserver's public-html file.
 Available after `deploy:publish`.
+
+**options.oldRevision**  
+The absolute path to the folder where the old revision is stored when rolling
+back. Available after `deploy:rollback`.
 
 
 ## Contribution

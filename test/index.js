@@ -103,6 +103,28 @@ runTasksAndCompareState({
   }
 });
 
+// Just deploy again so there's something to rollback
+runTasksAndCompareState({
+  describe: 'deploy',
+  tasks: ['deploy'],
+  stage: 'testing',
+  shouldCall: [
+    {
+      handler: gitPull.update,
+      count: 2
+    }
+  ],
+  stateAfter: {
+    shouldEqual: function () {
+      return {
+        'releases.length': state.last.releases.length + 1,
+        'current.symlink': config.remotePath + '/releases/' +
+          Object.keys(state.state.releases).sort().pop()
+      };
+    }
+  }
+});
+
 runTasksAndCompareState({
   describe: 'deploy:cleanup',
   tasks: ['deploy:cleanup'],
@@ -114,6 +136,24 @@ runTasksAndCompareState({
     shouldEqual: function () {
       return {
         'releases.length': state.state.releases.length < 5 ? state.state.releases.length : 5
+      };
+    }
+  }
+});
+
+runTasksAndCompareState({
+  describe: 'deploy:rollback',
+  tasks: ['deploy:rollback'],
+  stage: 'testing',
+  shouldCall: [{
+    handler: gitPull.rollback
+  }],
+  stateAfter: {
+    shouldEqual: function () {
+      var oldReleases = Object.keys(state.last.releases).sort();
+
+      return {
+        'current': config.remotePath + '/releases/' + oldReleases.slice(-2, -1)
       };
     }
   }
